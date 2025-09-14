@@ -1,0 +1,129 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abhinav Reddy</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Abhinav Reddy</div>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Welcome to My Portfolio</h1>
+        <div class="typewriter">Creative Web Developer</div>
+    </section>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <div class="about-content">
+            <img src="profile.jpg" alt="Abhinav Reddy" class="profile-photo">
+            <p><b>Hi, I'm Abhinav Reddy, a passionate web developer with a flair for creating visually stunning and interactive websites. With 1 year of experience in HTML, CSS, JavaScript, and React, I craft digital experiences that blend functionality with artistry. Let’s build something extraordinary!</b></p>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2>My Projects</h2>
+        <div class="project-grid">
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-front">
+                        <h3>Project One</h3>
+                        <p>Motion Based Motorised Camera System</p>
+                    </div>
+                    <div class="project-back">
+                        <p>Upgrade your home security camera or webcam with a motorized stand that will detect and follow any motion around the camera and it is useful for many people at night time and people will be aware of thief and strangers. It will guard our home at any time and it will be helpful for so many people.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-front">
+                        <h3>Project Two</h3>
+                        <p>Smart Geyser</p>
+                    </div>
+                    <div class="project-back">
+                        <p>A smart geyser can be controlled remotely using mobile apps or voice assistants. It allows scheduled heating and temperature control for convenience. Helps in energy optimization and reduces electricity bills. Comes with safety features like auto cut-off, dry heating protection, and leakage detection. Provides real-time usage insights for better monitoring and efficiency.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-front">
+                        <h3>Project Three</h3>
+                        <p>AI Music Composition System</p>
+                    </div>
+                    <div class="project-back">
+                        <p>Uses machine learning models to generate original melodies, harmonies, and rhythms. Can compose music in different genres and styles based on user input. Provides real-time suggestions or complete tracks for musicians and creators. Helps in saving time and boosting creativity by automating music generation. Can integrate with MIDI and audio tools for producing realistic sound outputs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Me</h2>
+        <form id="contact-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+        <p style="margin-top: 1rem;">Or reach me at: <a href="mailto:abhinavravula95@gmail.com">abhinavravula95@gmail.com</a> | <a href="http://linkedin.com/in/ravula-abhinav-reddy-8776a9334/" target="_blank">LinkedIn</a> | <a href="https://github.com/abhinavravula95-max" target="_blank">GitHub</a></p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Abhinav Reddy. Crafted with Creativity And Passion.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
